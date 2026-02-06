@@ -71,3 +71,26 @@ def fetch_driver_notices(driver_id: int):
 
     # Output Results
     return row
+
+# Get All Driver's
+def fetch_all_drivers():
+    # Open an SQL Bridge
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Query
+    query = """
+    SELECT driver_id, state_issue, last_name, first_name
+    FROM driver_details
+    """
+
+    # Execute Query
+    cursor.execute(query)
+    row = cursor.fetchall()
+
+    # Close Connection
+    cursor.close()
+    conn.close()
+
+    # Output Results
+    return row

@@ -11,7 +11,7 @@ prefix="/crud",
 tags=["crud"])
 
 # Get Driver's Details by ID
-@router.get("/drivers/{driver_id: int}")
+@router.get("/driver/{driver_id: int}")
 async def get_driver_details(driver_id: int):
     # Perform the Operation
     row = fetch_driver_details(driver_id)
@@ -61,3 +61,24 @@ async def get_driver_notice(driver_id: int):
 
     # Return the Results
     return notice
+
+# Get All Driver's Details
+@router.get("/drivers")
+async def get_all_drivers():
+    # Perform the Operation
+    row = fetch_all_drivers()
+
+    # Validation
+    if row is None:
+        raise HTTPException(status_code=404, detail="Driver ID Not Found")
+    
+    # All Drivers
+    drivers = {
+        "driver_id": row[0],
+        "state_issue": row[1],
+        "last_name": row[2],
+        "first_name": row[3]
+    }
+
+    # Return
+    return drivers
