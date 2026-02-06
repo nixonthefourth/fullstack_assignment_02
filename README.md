@@ -1,7 +1,7 @@
 # NYPD Notices API
-University of Lincoln
-Assignment 2, Full Stack Development
-Directed, Written and Published by Mykyta "Nick' Khomiakov
+- University of Lincoln
+- Assignment 2, Full Stack Development
+- Directed, Written and Published by Mykyta "Nick' Khomiakov
 
 ## Tech Stack
 - Python
