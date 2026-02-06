@@ -1,0 +1,66 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# ======================
+# FastAPI / Uvicorn
+# ======================
+*.log
+uvicorn.log
+
+# ======================
+# Environment variables
+# ======================
+.env
+.env.*
+!.env.example
+
+# ======================
+# Database / local files
+# ======================
+*.sqlite3
+*.db
+
+# ======================
+# VS Code
+# ======================
+.vscode/
+.history/
+
+# ======================
+# macOS
+# ======================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ======================
+# Testing / coverage
+# ======================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ======================
+# Build / distribution
+# ======================
+build/
+dist/
+*.egg-info/
+
+# ======================
+# Jupyter (just in case)
+# ======================
+.ipynb_checkpoints/
