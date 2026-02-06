@@ -11,16 +11,17 @@
 - Pydantic
 
 ## Project Structure
-app/
-├── main.py
-├── routers/
-│ └── crud.py
-├── models.py
-├── db_raw.py
-└── notice_base.sql
+- app/
+- ├── main.py
+- ├── routers/
+- │ └── crud.py
+- ├── models.py
+- ├── db_raw.py
+- └── notice_base.sql
 
 ## Running the project
-python -m venv .venv
+```python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
+```
