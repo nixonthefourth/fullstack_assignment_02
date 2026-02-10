@@ -7,7 +7,7 @@ from app.api.routers.notices import *
 
 # App Entrypoint
 app = FastAPI(
-    title="NYPD API",
+    title="NYPD Road Traffic Notice API",
     version="1.0.0"
 )
 
