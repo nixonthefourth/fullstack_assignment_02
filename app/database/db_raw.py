@@ -106,13 +106,13 @@ def create_driver(driver, address):
     cursor = conn.cursor()
 
     try:
-        # Check ZIP
+        # First, Check ZIP
         cursor.execute(
             "SELECT 1 FROM reg_zip_code WHERE zip_code = %s",
             (address.zip_code,)
         )
 
-        # If the ZIP doesn't exist, we can insert it
+        # Then, If the ZIP doesn't exist, we can insert it
         if cursor.fetchone() is None:
             cursor.execute(
                 """
@@ -122,7 +122,7 @@ def create_driver(driver, address):
                 (address.zip_code, address.state, address.city)
             )
 
-        # Insert Address
+        # Then, Insert Address
         cursor.execute(
             """
             INSERT INTO reg_address (zip_code, street, house)
@@ -133,7 +133,7 @@ def create_driver(driver, address):
 
         address_id = cursor.lastrowid
 
-        # Insert Driver
+        # Then, Insert Driver After Previous Details Have Been Completed
         cursor.execute(
             """
             INSERT INTO driver_details (
@@ -164,6 +164,7 @@ def create_driver(driver, address):
 
         driver_id = cursor.lastrowid
         conn.commit()
+        
         return driver_id
 
     # In case things go south – roll back
@@ -171,6 +172,7 @@ def create_driver(driver, address):
         conn.rollback()
         raise
 
+    # Final Leg of the Journey
     finally:
         cursor.close()
         conn.close()
