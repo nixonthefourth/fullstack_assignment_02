@@ -3,6 +3,7 @@
 from fastapi import HTTPException, APIRouter, Depends
 from typing import Optional, List
 from app.database.db_raw import *
+from app.schemas.drivers import *
 
 # Defines the Router
 drivers_router = APIRouter(
@@ -10,7 +11,7 @@ prefix="/drivers",
 tags=["Drivers"])
 
 # Get Driver's Details by ID
-@drivers_router.get("/{driver_id}")
+@drivers_router.get("/{driver_id}", response_model=DriverBase)
 async def get_driver_details(driver_id: int):
     # Perform the Operation
     row = fetch_driver_details(driver_id)

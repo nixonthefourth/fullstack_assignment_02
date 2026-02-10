@@ -3,6 +3,7 @@
 from fastapi import HTTPException, APIRouter, Depends
 from typing import Optional, List
 from app.database.db_raw import *
+from app.schemas.notices import *
 
 # Defines the Router
 notices_router = APIRouter(
@@ -10,7 +11,7 @@ prefix="/notices",
 tags=["Notices"])
 
 # Get Driver's Notice Details by ID
-@notices_router.get("/{driver_id}")
+@notices_router.get("/{driver_id}", response_model=NoticeBase)
 async def get_driver_notice(driver_id: int):
     # Perform the Operation
     row = fetch_driver_notices(driver_id)
