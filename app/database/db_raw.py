@@ -16,6 +16,8 @@ def get_connection():
 
     return conn
 
+"""GET"""
+
 # Get Driver's Details by ID
 def fetch_driver_details(driver_id: int):
     # Open SQL Conection
@@ -94,3 +96,81 @@ def fetch_all_drivers():
 
     # Output Results
     return row
+
+"""POST"""
+
+# Create a New Driver
+def create_driver(driver, address):
+    # Open SQL Connection
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check ZIP
+        cursor.execute(
+            "SELECT 1 FROM reg_zip_code WHERE zip_code = %s",
+            (address.zip_code,)
+        )
+
+        # If the ZIP doesn't exist, we can insert it
+        if cursor.fetchone() is None:
+            cursor.execute(
+                """
+                INSERT INTO reg_zip_code (zip_code, state, city)
+                VALUES (%s, %s, %s)
+                """,
+                (address.zip_code, address.state, address.city)
+            )
+
+        # Insert Address
+        cursor.execute(
+            """
+            INSERT INTO reg_address (zip_code, street, house)
+            VALUES (%s, %s, %s)
+            """,
+            (address.zip_code, address.street, address.house)
+        )
+
+        address_id = cursor.lastrowid
+
+        # Insert Driver
+        cursor.execute(
+            """
+            INSERT INTO driver_details (
+                address_id,
+                licence_number,
+                state_issue,
+                last_name,
+                first_name,
+                dob,
+                height_inches,
+                weight_pounds,
+                eyes_colour
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                address_id,
+                driver.licence_number,
+                driver.state_issue,
+                driver.last_name,
+                driver.first_name,
+                driver.dob,
+                driver.height_inches,
+                driver.weight_pounds,
+                driver.eyes_colour
+            )
+        )
+
+        driver_id = cursor.lastrowid
+        conn.commit()
+        return driver_id
+
+    # In case things go south – roll back
+    except Exception:
+        conn.rollback()
+        raise
+
+    finally:
+        cursor.close()
+        conn.close()

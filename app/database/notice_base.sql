@@ -3,14 +3,14 @@ CREATE DATABASE IF NOT EXISTS notice_base;
 USE notice_base;
 # Create Users
 # Officer Account
-CREATE USER 'officer_user'@'localhost' IDENTIFIED BY 'officer_password';
+CREATE USER IF NOT EXISTS  'officer_user'@'localhost' IDENTIFIED BY 'officer_password';
 
 # Drivers' Account
-CREATE USER 'driver_1_user'@'localhost' IDENTIFIED BY 'driver_1_password';
-CREATE USER 'driver_2_user'@'localhost' IDENTIFIED BY 'driver_2_password';
-CREATE USER 'driver_3_user'@'localhost' IDENTIFIED BY 'driver_3_password';
-CREATE USER 'driver_4_user'@'localhost' IDENTIFIED BY 'driver_4_password';
-CREATE USER 'driver_5_user'@'localhost' IDENTIFIED BY 'driver_5_password';
+CREATE USER IF NOT EXISTS  'driver_1_user'@'localhost' IDENTIFIED BY 'driver_1_password';
+CREATE USER IF NOT EXISTS  'driver_2_user'@'localhost' IDENTIFIED BY 'driver_2_password';
+CREATE USER IF NOT EXISTS  'driver_3_user'@'localhost' IDENTIFIED BY 'driver_3_password';
+CREATE USER IF NOT EXISTS  'driver_4_user'@'localhost' IDENTIFIED BY 'driver_4_password';
+CREATE USER IF NOT EXISTS  'driver_5_user'@'localhost' IDENTIFIED BY 'driver_5_password';
 
 # Person's ZIP Code
 # Accepts both ZIP and ZIP+4 standards

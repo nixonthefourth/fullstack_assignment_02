@@ -10,8 +10,10 @@ drivers_router = APIRouter(
 prefix="/drivers",
 tags=["Drivers"])
 
+"""GET"""
+
 # Get Driver's Details by ID
-@drivers_router.get("/{driver_id}", response_model=DriverBase)
+@drivers_router.get("/{driver_id}", response_model=DriverOut)
 async def get_driver_details(driver_id: int):
     # Perform the Operation
     row = fetch_driver_details(driver_id)
@@ -56,3 +58,24 @@ async def get_all_drivers():
 
     # Return
     return drivers
+
+"""POST"""
+
+@drivers_router.post("/",response_model=DriverOut,)
+def create_new_driver(payload: DriverCreate):
+    driver_id = create_driver(
+        driver=payload,
+        address=payload.address
+    )
+
+    return DriverOut(
+        driver_id=driver_id,
+        licence_number=payload.licence_number,
+        state_issue=payload.state_issue,
+        last_name=payload.last_name,
+        first_name=payload.first_name,
+        dob=payload.dob,
+        height_inches=payload.height_inches,
+        weight_pounds=payload.weight_pounds,
+        eyes_colour=payload.eyes_colour
+    )
