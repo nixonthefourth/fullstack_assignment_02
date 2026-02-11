@@ -1,16 +1,33 @@
 # app/schemas/notices.py
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime, date
+from typing import Literal
+
+# ZIP Code Model
+class ViolationZipCode(BaseModel):
+    zip_code: str
+    state: str
+    city: str
+    district: str
+
+# Violation Address Model
+class ViolationAddress(BaseModel):
+    street: str
 
 # Notice Base Model
 class NoticeBase(BaseModel):
     notice_id: str
     violation_date_time: datetime
     detachment: str
-    violation_severity: str
-    notice_status: str
+    violation_severity: Literal["Low", "Medium", "High"]
+    notice_status: Literal["Active", "Resolved", "Expired"]
     notification_sent: bool
     entry_date: date
     expiry_date: date
     violation_description: str
+
+# Notice Create Model
+class NoticeCreate(NoticeBase):
+    car_id: int
+    violation_zip: ViolationZipCode
+    violation_address: ViolationAddress

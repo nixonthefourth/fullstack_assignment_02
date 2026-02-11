@@ -1,4 +1,4 @@
-# crud.py
+# app/api/routers/drivers.py
 # Imports
 from fastapi import HTTPException, APIRouter, Depends
 from typing import Optional, List
@@ -62,7 +62,7 @@ async def get_all_drivers():
 """POST"""
 
 @drivers_router.post("/",response_model=DriverOut,)
-def create_new_driver(payload: DriverCreate):
+def insert_new_driver(payload: DriverCreate):
     driver_id = create_driver(
         driver=payload,
         address=payload.address

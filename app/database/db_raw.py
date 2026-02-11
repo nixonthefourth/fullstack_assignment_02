@@ -176,3 +176,111 @@ def create_driver(driver, address):
     finally:
         cursor.close()
         conn.close()
+
+# Create a New Notice
+def create_notice(notice, violation_zip, violation_address):
+    # Open SQL Connection
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Main Leg
+    try:
+        # First, Check That The Car Exists
+        cursor.execute(
+            "SELECT 1 FROM car_details WHERE car_id = %s",
+            (notice.car_id,)
+        )
+
+        # If Not, Throw Error
+        if cursor.fetchone() is None:
+            raise ValueError("Car does not exist. Cannot issue notice.")
+
+        # Then, Check ZIP Code For Violation
+        cursor.execute(
+            "SELECT 1 FROM violation_zip_code WHERE zip_code = %s",
+            (violation_zip.zip_code,)
+        )
+
+        # If ZIP doesn't exist, insert it
+        if cursor.fetchone() is None:
+            cursor.execute(
+                """
+                INSERT INTO violation_zip_code (
+                    zip_code,
+                    state,
+                    city,
+                    district
+                )
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    violation_zip.zip_code,
+                    violation_zip.state,
+                    violation_zip.city,
+                    violation_zip.district
+                )
+            )
+
+        # Then, Insert Violation Address
+        cursor.execute(
+            """
+            INSERT INTO violation_address (
+                zip_code,
+                street
+            )
+            VALUES (%s, %s)
+            """,
+            (
+                violation_zip.zip_code,
+                violation_address.street
+            )
+        )
+
+        address_id = cursor.lastrowid
+
+        # Finally, Insert Notice
+        cursor.execute(
+            """
+            INSERT INTO notice_info (
+                notice_id,
+                car_id,
+                address_id,
+                violation_date_time,
+                detachment,
+                violation_severity,
+                notice_status,
+                notification_sent,
+                entry_date,
+                expiry_date,
+                violation_description
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                notice.notice_id,
+                notice.car_id,
+                address_id,
+                notice.violation_date_time,
+                notice.detachment,
+                notice.violation_severity,
+                notice.notice_status,
+                notice.notification_sent,
+                notice.entry_date,
+                notice.expiry_date,
+                notice.violation_description
+            )
+        )
+
+        conn.commit()
+
+        return notice.notice_id
+
+    # In case things go south – roll back
+    except Exception:
+        conn.rollback()
+        raise
+
+    # Final Leg of the Journey
+    finally:
+        cursor.close()
+        conn.close()
