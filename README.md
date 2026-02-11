@@ -11,13 +11,22 @@
 - Pydantic
 
 ## Project Structure
-- app/
-- ├── main.py
-- ├── routers/
-- │ └── crud.py
-- ├── models.py
-- ├── db_raw.py
-- └── notice_base.sql
+```
+app/
+    main.py
+    api/
+        routers/
+            drivers.py
+            notices.py
+    database/
+        db_raw.py
+        notice_base.sql
+    schemas/
+        drivers.py
+        notices.py
+README.md
+requirements.txt
+```
 
 ## Running the project
 ```python -m venv .venv
