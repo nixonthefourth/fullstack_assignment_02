@@ -81,6 +81,7 @@ def insert_new_driver(payload: DriverCreate):
     )
 
 """DELETE"""
+# Deletes the Driver by ID
 @drivers_router.delete("/{driver_id}")
 async def remove_driver(driver_id: int):
 
@@ -93,3 +94,28 @@ async def remove_driver(driver_id: int):
         )
 
     return {"message": f"Driver {driver_id} deleted successfully"}
+
+"""PUT"""
+# Updates Driver's Details by ID
+@drivers_router.put("/{driver_id}", response_model=DriverOut)
+async def update_existing_driver(driver_id: int, payload: DriverCreate):
+
+    row = update_driver(driver_id, payload)
+
+    if row is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Driver not found"
+        )
+
+    return {
+        "driver_id": row[0],
+        "licence_number": row[1],
+        "state_issue": row[2],
+        "last_name": row[3],
+        "first_name": row[4],
+        "dob": row[5],
+        "height_inches": row[6],
+        "weight_pounds": row[7],
+        "eyes_colour": row[8]
+    }

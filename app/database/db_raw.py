@@ -404,3 +404,221 @@ def delete_driver(driver_id: int):
     finally:
         cursor.close()
         conn.close()
+
+"""PUT"""
+
+# Update Driver (Full PUT) and return updated row
+def update_driver(driver_id: int, payload):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check driver exists + get address_id
+        cursor.execute(
+            "SELECT address_id FROM driver_details WHERE driver_id = %s",
+            (driver_id,)
+        )
+
+        result = cursor.fetchone()
+
+        if result is None:
+            return None
+
+        address_id = result[0]
+
+        # Check ZIP exists
+        cursor.execute(
+            "SELECT 1 FROM reg_zip_code WHERE zip_code = %s",
+            (payload.address.zip_code,)
+        )
+
+        if cursor.fetchone() is None:
+            cursor.execute(
+                """
+                INSERT INTO reg_zip_code (zip_code, state, city)
+                VALUES (%s, %s, %s)
+                """,
+                (
+                    payload.address.zip_code,
+                    payload.address.state,
+                    payload.address.city
+                )
+            )
+
+        # Update Address
+        cursor.execute(
+            """
+            UPDATE reg_address
+            SET zip_code = %s,
+                street = %s,
+                house = %s
+            WHERE address_id = %s
+            """,
+            (
+                payload.address.zip_code,
+                payload.address.street,
+                payload.address.house,
+                address_id
+            )
+        )
+
+        # Update Driver Details
+        cursor.execute(
+            """
+            UPDATE driver_details
+            SET licence_number = %s,
+                state_issue = %s,
+                last_name = %s,
+                first_name = %s,
+                dob = %s,
+                height_inches = %s,
+                weight_pounds = %s,
+                eyes_colour = %s
+            WHERE driver_id = %s
+            """,
+            (
+                payload.licence_number,
+                payload.state_issue,
+                payload.last_name,
+                payload.first_name,
+                payload.dob,
+                payload.height_inches,
+                payload.weight_pounds,
+                payload.eyes_colour,
+                driver_id
+            )
+        )
+
+        conn.commit()
+
+        # Return Updated Row
+        cursor.execute(
+            """
+            SELECT driver_id, licence_number, state_issue,
+                   last_name, first_name, dob,
+                   height_inches, weight_pounds, eyes_colour
+            FROM driver_details
+            WHERE driver_id = %s
+            """,
+            (driver_id,)
+        )
+
+        return cursor.fetchone()
+
+    except Exception:
+        conn.rollback()
+        raise
+
+    finally:
+        cursor.close()
+        conn.close()
+
+# Update Notice and Return Updated Row
+def update_notice(notice_id: str, payload):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check notice exists + get address_id
+        cursor.execute(
+            "SELECT address_id FROM notice_info WHERE notice_id = %s",
+            (notice_id,)
+        )
+
+        result = cursor.fetchone()
+
+        if result is None:
+            return None
+
+        address_id = result[0]
+
+        # Check violation ZIP exists
+        cursor.execute(
+            "SELECT 1 FROM violation_zip_code WHERE zip_code = %s",
+            (payload.violation_zip.zip_code,)
+        )
+
+        if cursor.fetchone() is None:
+            cursor.execute(
+                """
+                INSERT INTO violation_zip_code (zip_code, state, city, district)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    payload.violation_zip.zip_code,
+                    payload.violation_zip.state,
+                    payload.violation_zip.city,
+                    payload.violation_zip.district
+                )
+            )
+
+        # Update violation address
+        cursor.execute(
+            """
+            UPDATE violation_address
+            SET zip_code = %s,
+                street = %s
+            WHERE address_id = %s
+            """,
+            (
+                payload.violation_zip.zip_code,
+                payload.violation_address.street,
+                address_id
+            )
+        )
+
+        # Update notice_info
+        cursor.execute(
+            """
+            UPDATE notice_info
+            SET car_id = %s,
+                violation_date_time = %s,
+                detachment = %s,
+                violation_severity = %s,
+                notice_status = %s,
+                notification_sent = %s,
+                entry_date = %s,
+                expiry_date = %s,
+                violation_description = %s
+            WHERE notice_id = %s
+            """,
+            (
+                payload.car_id,
+                payload.violation_date_time,
+                payload.detachment,
+                payload.violation_severity,
+                payload.notice_status,
+                payload.notification_sent,
+                payload.entry_date,
+                payload.expiry_date,
+                payload.violation_description,
+                notice_id
+            )
+        )
+
+        conn.commit()
+
+        # Return updated row
+        cursor.execute(
+            """
+            SELECT notice_id, violation_date_time, detachment,
+                   violation_severity, notice_status,
+                   notification_sent, entry_date,
+                   expiry_date, violation_description
+            FROM notice_info
+            WHERE notice_id = %s
+            """,
+            (notice_id,)
+        )
+
+        return cursor.fetchone()
+
+    except Exception:
+        conn.rollback()
+        raise
+
+    finally:
+        cursor.close()
+        conn.close()

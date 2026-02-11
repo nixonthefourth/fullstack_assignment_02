@@ -75,3 +75,29 @@ async def remove_notice(notice_id: str):
         )
 
     return {"message": f"Notice {notice_id} deleted successfully"}
+
+"""PUT"""
+
+# Fully Updates Notice Details
+@notices_router.put("/{notice_id}", response_model=NoticeBase)
+async def update_existing_notice(notice_id: str, payload: NoticeCreate):
+
+    row = update_notice(notice_id, payload)
+
+    if row is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Notice not found"
+        )
+
+    return {
+        "notice_id": row[0],
+        "violation_date_time": row[1],
+        "detachment": row[2],
+        "violation_severity": row[3],
+        "notice_status": row[4],
+        "notification_sent": row[5],
+        "entry_date": row[6],
+        "expiry_date": row[7],
+        "violation_description": row[8]
+    }
