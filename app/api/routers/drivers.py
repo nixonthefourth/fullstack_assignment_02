@@ -79,3 +79,17 @@ def insert_new_driver(payload: DriverCreate):
         weight_pounds=payload.weight_pounds,
         eyes_colour=payload.eyes_colour
     )
+
+"""DELETE"""
+@drivers_router.delete("/{driver_id}")
+async def remove_driver(driver_id: int):
+
+    deleted = delete_driver(driver_id)
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Driver not found"
+        )
+
+    return {"message": f"Driver {driver_id} deleted successfully"}

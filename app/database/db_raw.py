@@ -326,3 +326,81 @@ def delete_notice(notice_id: str):
     finally:
         cursor.close()
         conn.close()
+
+# Delete Driver by ID
+# Uses manual cascading
+def delete_driver(driver_id: int):
+    # Connect to SQL
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check Driver Exists
+        cursor.execute(
+            "SELECT address_id FROM driver_details WHERE driver_id = %s",
+            (driver_id,)
+        )
+
+        result = cursor.fetchone()
+
+        if result is None:
+            return False
+
+        driver_address_id = result[0]
+
+        # Get All car_ids Owned by This Driver
+        cursor.execute(
+            "SELECT car_id FROM car_details WHERE driver_id = %s",
+            (driver_id,)
+        )
+
+        cars = cursor.fetchall()
+
+        for car in cars:
+            car_id = car[0]
+
+            # Get All Notices For This Car
+            cursor.execute(
+                "SELECT notice_id FROM notice_info WHERE car_id = %s",
+                (car_id,)
+            )
+
+            notices = cursor.fetchall()
+
+            for notice in notices:
+                notice_id = notice[0]
+
+                # Delete Actions Linked to Notice
+                cursor.execute(
+                    "DELETE FROM actions WHERE notice_id = %s",
+                    (notice_id,)
+                )
+
+                # Delete Notice
+                cursor.execute(
+                    "DELETE FROM notice_info WHERE notice_id = %s",
+                    (notice_id,)
+                )
+
+            # Delete Car
+            cursor.execute(
+                "DELETE FROM car_details WHERE car_id = %s",
+                (car_id,)
+            )
+
+        # Finally Delete Driver
+        cursor.execute(
+            "DELETE FROM driver_details WHERE driver_id = %s",
+            (driver_id,)
+        )
+
+        conn.commit()
+        return True
+
+    except Exception:
+        conn.rollback()
+        raise
+
+    finally:
+        cursor.close()
+        conn.close()
