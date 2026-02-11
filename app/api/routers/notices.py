@@ -59,3 +59,19 @@ async def insert_new_notice(notice: NoticeCreate):
         "expiry_date": notice.expiry_date,
         "violation_description": notice.violation_description
     }
+
+"""DELETE"""
+
+# Delete Notice by ID
+@notices_router.delete("/{notice_id}")
+async def remove_notice(notice_id: str):
+
+    deleted = delete_notice(notice_id)
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Notice not found"
+        )
+
+    return {"message": f"Notice {notice_id} deleted successfully"}

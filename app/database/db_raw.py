@@ -1,4 +1,4 @@
-# db_raw.py
+# app/database/db_raw.py
 # Imports
 import MySQLdb
 
@@ -74,7 +74,7 @@ def fetch_driver_notices(driver_id: int):
     # Output Results
     return row
 
-# Get All Driver's
+# Get All Drivers
 def fetch_all_drivers():
     # Open an SQL Bridge
     conn = get_connection()
@@ -281,6 +281,48 @@ def create_notice(notice, violation_zip, violation_address):
         raise
 
     # Final Leg of the Journey
+    finally:
+        cursor.close()
+        conn.close()
+
+"""DELETE"""
+
+# Delete Notice by ID
+def delete_notice(notice_id: str):
+    # Connect to the Database
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # First, Check Notice Exists
+        cursor.execute(
+            "SELECT 1 FROM notice_info WHERE notice_id = %s",
+            (notice_id,)
+        )
+
+        # Notice Not Found
+        if cursor.fetchone() is None:
+            return False 
+
+        # Delete Dependent Legal Actions First
+        cursor.execute(
+            "DELETE FROM actions WHERE notice_id = %s",
+            (notice_id,)
+        )
+
+        # Then Delete Notice Itself
+        cursor.execute(
+            "DELETE FROM notice_info WHERE notice_id = %s",
+            (notice_id,)
+        )
+
+        conn.commit()
+        return True
+
+    except Exception:
+        conn.rollback()
+        raise
+
     finally:
         cursor.close()
         conn.close()
