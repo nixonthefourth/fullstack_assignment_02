@@ -37,7 +37,7 @@ async def get_driver_notice(driver_id: int):
     return notice
 
 # Create New Notice
-@notices_router.post("/", response_model=NoticeBase)
+@notices_router.post("", response_model=NoticeBase)
 async def insert_new_notice(notice: NoticeCreate):
 
     notice_id = create_notice(notice, notice.violation_zip, notice.violation_address)

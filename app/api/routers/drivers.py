@@ -39,7 +39,7 @@ async def get_driver_details(driver_id: int):
     return driver
 
 # Get All Driver's Details
-@drivers_router.get("/")
+@drivers_router.get("")
 async def get_all_drivers():
     # Perform the Operation
     row = fetch_all_drivers()
@@ -61,7 +61,7 @@ async def get_all_drivers():
 
 """POST"""
 
-@drivers_router.post("/",response_model=DriverOut,)
+@drivers_router.post("",response_model=DriverOut,)
 def insert_new_driver(payload: DriverCreate):
     driver_id = create_driver(
         driver=payload,
@@ -96,6 +96,7 @@ async def remove_driver(driver_id: int):
     return {"message": f"Driver {driver_id} deleted successfully"}
 
 """PUT"""
+
 # Updates Driver's Details by ID
 @drivers_router.put("/{driver_id}", response_model=DriverOut)
 async def update_existing_driver(driver_id: int, payload: DriverCreate):
