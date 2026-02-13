@@ -1,7 +1,6 @@
 # app/api/routers/notices.py
 # Imports
-from fastapi import HTTPException, APIRouter, Depends
-from typing import Optional, List
+from fastapi import HTTPException, APIRouter, status
 from app.database.db_raw import *
 from app.schemas.notices import *
 
@@ -10,8 +9,10 @@ notices_router = APIRouter(
 prefix="/notices",
 tags=["Notices"])
 
+"""GET"""
+
 # Get Driver's Notice Details by ID
-@notices_router.get("/{driver_id}", response_model=NoticeBase)
+@notices_router.get("/{driver_id}", response_model=NoticeBase, status_code=status.HTTP_200_OK)
 async def get_driver_notice(driver_id: int):
     # Perform the Operation
     row = fetch_driver_notices(driver_id)
@@ -36,8 +37,10 @@ async def get_driver_notice(driver_id: int):
     # Return the Results
     return notice
 
+"""POST"""
+
 # Create New Notice
-@notices_router.post("", response_model=NoticeBase)
+@notices_router.post("", response_model=NoticeBase, status_code=status.HTTP_200_OK)
 async def insert_new_notice(notice: NoticeCreate):
 
     notice_id = create_notice(notice, notice.violation_zip, notice.violation_address)
@@ -63,7 +66,7 @@ async def insert_new_notice(notice: NoticeCreate):
 """DELETE"""
 
 # Delete Notice by ID
-@notices_router.delete("/{notice_id}")
+@notices_router.delete("/{notice_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remove_notice(notice_id: str):
 
     deleted = delete_notice(notice_id)
@@ -79,7 +82,7 @@ async def remove_notice(notice_id: str):
 """PUT"""
 
 # Fully Updates Notice Details
-@notices_router.put("/{notice_id}", response_model=NoticeBase)
+@notices_router.put("/{notice_id}", response_model=NoticeBase, status_code=status.HTTP_201_CREATED)
 async def update_existing_notice(notice_id: str, payload: NoticeCreate):
 
     row = update_notice(notice_id, payload)

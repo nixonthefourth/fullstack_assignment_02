@@ -1,7 +1,6 @@
 # app/api/routers/drivers.py
 # Imports
-from fastapi import HTTPException, APIRouter, Depends
-from typing import Optional, List
+from fastapi import HTTPException, APIRouter, status
 from app.database.db_raw import *
 from app.schemas.drivers import *
 
@@ -13,7 +12,7 @@ tags=["Drivers"])
 """GET"""
 
 # Get Driver's Details by ID
-@drivers_router.get("/{driver_id}", response_model=DriverOut)
+@drivers_router.get("/{driver_id}", response_model=DriverOut, status_code=status.HTTP_200_OK)
 async def get_driver_details(driver_id: int):
     # Perform the Operation
     row = fetch_driver_details(driver_id)
@@ -39,7 +38,7 @@ async def get_driver_details(driver_id: int):
     return driver
 
 # Get All Driver's Details
-@drivers_router.get("")
+@drivers_router.get("", status_code=status.HTTP_200_OK)
 async def get_all_drivers():
     # Perform the Operation
     row = fetch_all_drivers()
@@ -61,7 +60,7 @@ async def get_all_drivers():
 
 """POST"""
 
-@drivers_router.post("",response_model=DriverOut,)
+@drivers_router.post("", response_model=DriverOut, status_code=status.HTTP_201_CREATED)
 def insert_new_driver(payload: DriverCreate):
     driver_id = create_driver(
         driver=payload,
@@ -81,8 +80,9 @@ def insert_new_driver(payload: DriverCreate):
     )
 
 """DELETE"""
+
 # Deletes the Driver by ID
-@drivers_router.delete("/{driver_id}")
+@drivers_router.delete("/{driver_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remove_driver(driver_id: int):
 
     deleted = delete_driver(driver_id)
@@ -98,7 +98,7 @@ async def remove_driver(driver_id: int):
 """PUT"""
 
 # Updates Driver's Details by ID
-@drivers_router.put("/{driver_id}", response_model=DriverOut)
+@drivers_router.put("/{driver_id}", response_model=DriverOut, status_code=status.HTTP_201_CREATED)
 async def update_existing_driver(driver_id: int, payload: DriverCreate):
 
     row = update_driver(driver_id, payload)

@@ -1,5 +1,5 @@
 # app/schemas/notices.py
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime, date
 from typing import Literal
 
