@@ -16,12 +16,16 @@ app/
     main.py
     api/
         routers/
+            auth.py
             drivers.py
             notices.py
+    core/
+        security.py
     database/
         db_raw.py
         notice_base.sql
     schemas/
+        auth.py
         drivers.py
         notices.py
 README.md

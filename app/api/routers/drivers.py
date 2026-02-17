@@ -1,13 +1,17 @@
 # app/api/routers/drivers.py
 # Imports
-from fastapi import HTTPException, APIRouter, status
+from fastapi import HTTPException, APIRouter, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.database.db_raw import *
 from app.schemas.drivers import *
+from app.core.security import verify_token
 
 # Defines the Router
 drivers_router = APIRouter(
 prefix="/drivers",
 tags=["Drivers"])
+
+security = HTTPBearer()
 
 """GET"""
 
@@ -61,7 +65,12 @@ async def get_all_drivers():
 """POST"""
 
 @drivers_router.post("", response_model=DriverOut, status_code=status.HTTP_201_CREATED)
-def insert_new_driver(payload: DriverCreate):
+def insert_new_driver(
+    payload: DriverCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    verify_token(credentials.credentials)
+
     driver_id = create_driver(
         driver=payload,
         address=payload.address
@@ -83,7 +92,11 @@ def insert_new_driver(payload: DriverCreate):
 
 # Deletes the Driver by ID
 @drivers_router.delete("/{driver_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def remove_driver(driver_id: int):
+async def remove_driver(
+    driver_id: int,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    verify_token(credentials.credentials)
 
     deleted = delete_driver(driver_id)
 
@@ -99,7 +112,12 @@ async def remove_driver(driver_id: int):
 
 # Updates Driver's Details by ID
 @drivers_router.put("/{driver_id}", response_model=DriverOut, status_code=status.HTTP_201_CREATED)
-async def update_existing_driver(driver_id: int, payload: DriverCreate):
+async def update_existing_driver(
+    driver_id: int,
+    payload: DriverCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    verify_token(credentials.credentials)
 
     row = update_driver(driver_id, payload)
 

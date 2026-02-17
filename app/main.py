@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from app.database.db_raw import *
 from app.api.routers.drivers import *
 from app.api.routers.notices import *
+from app.api.routers.auth import *
 
 # App Entrypoint
 app = FastAPI(
@@ -14,6 +15,7 @@ app = FastAPI(
 # Adding Router
 app.include_router(drivers_router)
 app.include_router(notices_router)
+app.include_router(auth_router)
 
 @app.get("/")
 async def root():

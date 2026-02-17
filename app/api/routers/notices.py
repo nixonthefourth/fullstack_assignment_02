@@ -1,13 +1,17 @@
 # app/api/routers/notices.py
 # Imports
-from fastapi import HTTPException, APIRouter, status
+from fastapi import HTTPException, APIRouter, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.database.db_raw import *
 from app.schemas.notices import *
+from app.core.security import verify_token
 
 # Defines the Router
 notices_router = APIRouter(
 prefix="/notices",
 tags=["Notices"])
+
+security = HTTPBearer()
 
 """GET"""
 
@@ -41,7 +45,11 @@ async def get_driver_notice(driver_id: int):
 
 # Create New Notice
 @notices_router.post("", response_model=NoticeBase, status_code=status.HTTP_200_OK)
-async def insert_new_notice(notice: NoticeCreate):
+async def insert_new_notice(
+    notice: NoticeCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    verify_token(credentials.credentials)
 
     notice_id = create_notice(notice, notice.violation_zip, notice.violation_address)
 
@@ -67,7 +75,11 @@ async def insert_new_notice(notice: NoticeCreate):
 
 # Delete Notice by ID
 @notices_router.delete("/{notice_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def remove_notice(notice_id: str):
+async def remove_notice(
+    notice_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    verify_token(credentials.credentials)
 
     deleted = delete_notice(notice_id)
 
@@ -83,7 +95,12 @@ async def remove_notice(notice_id: str):
 
 # Fully Updates Notice Details
 @notices_router.put("/{notice_id}", response_model=NoticeBase, status_code=status.HTTP_201_CREATED)
-async def update_existing_notice(notice_id: str, payload: NoticeCreate):
+async def update_existing_notice(
+    notice_id: str,
+    payload: NoticeCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    verify_token(credentials.credentials)
 
     row = update_notice(notice_id, payload)
 

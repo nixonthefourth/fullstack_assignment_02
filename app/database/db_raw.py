@@ -8,8 +8,8 @@ def get_connection():
     conn = MySQLdb.connect(
         host = "localhost",
         port = 3306,
-        user = "root",
-        password = "0777",
+        user = "officer_user",
+        password = "officer_password",
         db = "notice_base",
         charset="utf8mb4"
     )

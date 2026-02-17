@@ -1,3 +1,7 @@
 fastapi
-mysqlclient
 uvicorn
+sqlalchemy
+mysqlclient
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
