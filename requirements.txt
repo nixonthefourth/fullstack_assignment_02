@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-sqlalchemy
 mysqlclient
 passlib[bcrypt]
 python-jose[cryptography]

@@ -8,8 +8,8 @@ def get_connection():
     conn = MySQLdb.connect(
         host = "localhost",
         port = 3306,
-        user = "officer_user",
-        password = "officer_password",
+        user = "root",
+        password = "SEPS",
         db = "notice_base",
         charset="utf8mb4"
     )
@@ -20,7 +20,7 @@ def get_connection():
 
 # Get Driver's Details by ID
 def fetch_driver_details(driver_id: int):
-    # Open SQL Conection
+    # Open SQL Connection
     conn = get_connection()
     cursor = conn.cursor()
 
